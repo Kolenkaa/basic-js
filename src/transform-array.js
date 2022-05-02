@@ -15,41 +15,40 @@ const { NotImplementedError } = require('../extensions/index.js');
  */
 function transform(arr) {
 	if (!Array.isArray(arr)) throw new Error("'arr' parameter must be an instance of the Array!");
-
-	const transformedArr = [];
+	else if (arr.length === 0) {
+		return [];
+	}
 
 	const DOUBLE_PREV = "--double-prev";
 	const DOUBLE_NEXT = "--double-next";
 	const DISCARD_PREV = "--discard-prev";
 	const DISCARD_NEXT = "--discard-next";
 
+	const transformedArr = [];
+
 	for (let i = 0; i < arr.length; i++) {
-		if (arr[i] !== DOUBLE_PREV && arr[i] !== DOUBLE_NEXT && arr[i] !== DISCARD_PREV && arr[i] !== DISCARD_NEXT) {
-			return arr;
-		}
 		if (arr[i] === DOUBLE_PREV) {
-			transformedArr = [
-				...arr.slice(0, i),
-				arr[i - 1],
-				...arr.slice(i + 1)
-			];
+			if (i > 0) {
+				transformedArr.push(arr[i - 1]);
+			}
 		}
 		if (arr[i] === DOUBLE_NEXT) {
-			transformedArr = [
-				...arr.slice(0, i),
-				arr[i + 1],
-				...arr.slice(i + 1)
-			];
+			if (i < arr.length - 1) {
+				transformedArr.push(arr[i + 1]);
+			}
 		}
 		if (arr[i] === DISCARD_PREV) {
-			transformedArr = [...arr.slice(0, i - 1), ...arr.slice(i + 1)];
+			if (transformedArr.length > 0) {
+				transformedArr.pop();
+			}
 		}
 		if (arr[i] === DISCARD_NEXT) {
-			transformedArr = [
-				...arr.slice(0, i),
-				arr[i - 1],
-				...arr.slice(i + 2)
-			];
+			if (i < arr.length - 1) {
+				i++;
+			}
+		}
+		if (arr[i] !== DOUBLE_PREV && arr[i] !== DOUBLE_NEXT && arr[i] !== DISCARD_PREV && arr[i] !== DISCARD_NEXT) {
+			return arr;
 		}
 	}
 
